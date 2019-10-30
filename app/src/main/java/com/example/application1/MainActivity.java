@@ -15,9 +15,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //隐藏标题栏
         ActionBar actionbar = getSupportActionBar();
         if (actionbar != null) actionbar.hide();
         ImageView start_1 = findViewById(R.id.start_1);
+        //获取数据 在文本框中显示
         Intent intent = getIntent();
         TextView text_stature = findViewById(R.id.text_stature);
         text_stature.setText(intent.getStringExtra("data_stature"));
@@ -64,5 +66,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
     }
 }

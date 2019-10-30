@@ -5,17 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.Spanned;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
-import java.util.regex.Pattern;
 
 
 public class test extends AppCompatActivity {
@@ -32,12 +25,12 @@ public class test extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
         ActionBar actionbar = getSupportActionBar();
-        if (actionbar != null) actionbar.hide();
-        final ImageView back = findViewById(R.id.back);
+        if (actionbar != null) actionbar.hide();                 //隐藏标题栏
+        ImageView back = findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(test.this, MainActivity.class);
+                Intent intent = new Intent(test.this, MainActivity.class);//返回主界面
                 startActivity(intent);
             }
         });
@@ -51,10 +44,11 @@ public class test extends AppCompatActivity {
         start.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //从输入框获取数据
                 String stature = edit_stature.getText().toString().trim();
                 String weight = edit_weight.getText().toString().trim();
                 String gender = edit_gender.getText().toString().trim();
-                String age = edit_age.getText().toString().trim();//获取输入的数据
+                String age = edit_age.getText().toString().trim();
 
 
                 int gender_num;
@@ -62,39 +56,55 @@ public class test extends AppCompatActivity {
                 else if (gender.equals("女")) gender_num = 0;
                 else gender_num = 2;
 
-                double stature_1 = Double.parseDouble(stature);
-                double weight_1 = Double.parseDouble(weight);
-                int age_1 = Integer.parseInt(age);
-                double bmi = weight_1 / (stature_1 * stature_1 * 0.0001);
 
-                if (stature.isEmpty()||weight.isEmpty()||age.isEmpty()||gender.isEmpty())
+                if (stature.isEmpty()||weight.isEmpty()||age.isEmpty()||gender.isEmpty()||stature.equals(".")||weight.equals("."))
                 {Toast.makeText(test.this,"输入不能为空",Toast.LENGTH_LONG).show();}
-                if (gender_num == 2)
-                { Toast.makeText(test.this, "性别输入有误", Toast.LENGTH_LONG).show(); }
-                if (age_1<16)
-                { Toast.makeText(test.this,"年龄范围：16-99岁",Toast.LENGTH_LONG).show(); }
-                if (stature_1>250 || stature_1<120 )
-                { Toast.makeText(test.this, "身高范围：120-250cm", Toast.LENGTH_LONG).show(); }
-                if (weight_1>150 || weight_1<35)
-                { Toast.makeText(test.this, "体重范围：35-150kg", Toast.LENGTH_LONG).show(); }
 
-                if ((gender_num!=2 && age_1>=16 && stature_1>=120&&stature_1<=250 && weight_1>=35&&weight_1<=150)
-                    &&(!(("".equals(stature))||("".equals(weight))||("".equals(age))||("".equals(gender)))))
+                if((stature.length()!=0)&&(weight.length()!=0)&&(age.length()!=0)&&(gender.length()!=0)
+                        &&(!(stature.equals("."))&&!(weight.equals("."))))
+                {
+                    double stature_1 = Double.parseDouble(stature); //将输入的数据转换成double
+                    double weight_1 = Double.parseDouble(weight);
+                    int age_1 = Integer.parseInt(age);              //转换成int
+                    double bmi = weight_1 / (stature_1 * stature_1 * 0.0001);//计算bmi
+
+                    double weight_min=0;
+                    if (gender_num==1) weight_min=46.5;
+                    else if (gender_num==0) weight_min=36;
+
+                    //输入错误时提示
+                    if (gender_num == 2)
+                    { Toast.makeText(test.this, "性别输入有误", Toast.LENGTH_LONG).show(); }
+                    if (age_1<16)
+                    { Toast.makeText(test.this,"年龄范围：16-80岁",Toast.LENGTH_LONG).show(); }
+                    if (stature_1>250 || stature_1<120 )
+                    { Toast.makeText(test.this, "身高范围：120-250cm", Toast.LENGTH_LONG).show(); }
+
+                    //体重设定最小值 水分率不会超过100%
+                    if (weight_1>150 || weight_1<weight_min) {
+                        if (gender_num==1) Toast.makeText(test.this, "体重范围：46.5-150kg", Toast.LENGTH_LONG).show();
+                        else if (gender_num==0) Toast.makeText(test.this, "体重范围：36-150kg", Toast.LENGTH_LONG).show();
+                    }
+
+                //数据在范围内 计算并跳转
+                if ((gender_num!=2 && age_1>=16 && age_1<=80 && stature_1>=120&&stature_1<=250 && weight_1>=weight_min&&weight_1<=150))
+
                 { Intent intent = new Intent(test.this, result.class);
 
+                    //身高
                     if (gender_num == 1) {
                         if (stature_1 >= 160)
                             intent.putExtra("data_grade_stature", "标准");
                         else
                             intent.putExtra("data_grade_stature", "偏低");
-                    } else if (gender_num == 0) {
+                    } else {
                         if (stature_1 >= 150)
                             intent.putExtra("data_grade_stature", "标准");
                         else
                             intent.putExtra("data_grade_stature", "偏低");
                     }
 
-
+                    //体重
                     double standard_weight;
                     if (gender_num == 1) standard_weight = (stature_1 - 80) * 0.7;
                     else standard_weight = (stature_1 - 70) * 0.6;
@@ -102,6 +112,7 @@ public class test extends AppCompatActivity {
                     double weight_up_2 = 1.2 * standard_weight;
                     double weight_down_1 = 0.9 * standard_weight;
                     double weight_down_2 = 0.8 * standard_weight;
+
                     if (weight_1 <= weight_up_1 && weight_1 >= weight_down_1)
                         intent.putExtra("data_grade_weight", "正常");
                     else if (weight_1 <= weight_up_2 && weight_1 > weight_up_1)
@@ -112,6 +123,7 @@ public class test extends AppCompatActivity {
                         intent.putExtra("data_grade_weight", "肥胖");
                     else intent.putExtra("data_grade_weight", "营养不良");
 
+                    //BMI
                     int score_bmi = 0;
                     if (bmi >= 10 && bmi <= 18.5) {
                         score_bmi = 75;
@@ -128,6 +140,7 @@ public class test extends AppCompatActivity {
                     }
                     intent.putExtra("data_score_bmi", score_bmi);
 
+                    //体脂率
                     double fat = 1.2 * bmi + 0.23 * age_1 - 5.4 - 10.8 * gender_num;
                     int score_fat = 0;
                     if (gender_num == 1) {
@@ -161,6 +174,7 @@ public class test extends AppCompatActivity {
                     }
                     intent.putExtra("data_score_fat", score_fat);
 
+                    //肌肉率
                     double muscle;
                     int score_muscle = 0;
                     if (gender_num == 1) {
@@ -176,7 +190,7 @@ public class test extends AppCompatActivity {
                             intent.putExtra("data_advice_muscle", "肌肉率正常，可以加强锻炼以达到优秀水平");
 
                         }
-                        if (muscle > 0.65 && muscle <= 0.7) {
+                        if (muscle > 0.65) {
                             score_muscle = 100;
                             intent.putExtra("data_grade_muscle", "优秀");
                             intent.putExtra("data_advice_muscle", "肌肉率优秀，继续保持");
@@ -193,15 +207,16 @@ public class test extends AppCompatActivity {
                             intent.putExtra("data_grade_muscle", "正常");
                             intent.putExtra("data_advice_muscle", "肌肉率正常，可以加强锻炼以达到优秀水平");
                         }
-                        if (muscle > 0.6 && muscle <= 0.65) {
+                        if (muscle > 0.6) {
                             score_muscle = 100;
                             intent.putExtra("data_grade_muscle", "优秀");
                             intent.putExtra("data_advice_muscle", "肌肉率优秀，继续保持");
                         }
                     }
                     intent.putExtra("data_score_muscle", score_muscle);
-                    muscle = muscle * 100;
+                    muscle = muscle * 100;//后面要加%
 
+                    //水分率
                     double water;
                     int score_water;
                     if (gender_num == 1) water = 1.2 * muscle;
@@ -222,6 +237,7 @@ public class test extends AppCompatActivity {
                     intent.putExtra("data_score_water", score_water);
 
 
+                    //骨质
                     double bone = (weight_1 - age_1) * 0.2;
                     int score_bone = 0;
                     if (bone < -4) {
@@ -241,6 +257,7 @@ public class test extends AppCompatActivity {
                     }
                     intent.putExtra("data_score_bone", score_bone);
 
+                    //代谢
                     double metabolism;
                     int score_metabolism;
                     if (gender_num == 1) {
@@ -276,20 +293,20 @@ public class test extends AppCompatActivity {
                     }
                     intent.putExtra("data_score_metabolism", score_metabolism);
 
-                    //if (score_fat == 100 && score_water == 100 && score_muscle >= 80 && score_bone == 100 && score_metabolism == 100)
-                        //intent.putExtra("data_advice", "健康状况良好，继续保持");
 
+                    //总体得分
                     double score_overall = score_bmi * 0.5 + score_fat * 0.1 + score_water * 0.1 + score_muscle * 0.1 + score_bone * 0.1 + score_metabolism * 0.1;
                     if (score_overall>=85) intent.putExtra("data_grade_overall","优秀");
                     else if (score_overall<85&&score_overall>=70) intent.putExtra("data_grade_overall","良好");
                     else if (score_overall<70) intent.putExtra("data_grade_overall","较差");
 
-
-                    intent.putExtra("data_stature", stature);//""是编号 后面是实际传递的数据 根据编号获取数据
+                    //""是编号 后面是实际传递的数据 根据编号获取数据
+                    intent.putExtra("data_stature", stature);
                     intent.putExtra("data_weight", weight);
                     intent.putExtra("data_gender", gender);
                     intent.putExtra("data_age", age);
-                    intent.putExtra("data_bmi", String.format("%.1f", bmi));//保留一位小数
+                    //保留一位小数
+                    intent.putExtra("data_bmi", String.format("%.1f", bmi));
                     intent.putExtra("data_fat", String.format("%.1f%%", fat));
                     intent.putExtra("data_water", String.format("%.1f%%", water));
                     intent.putExtra("data_muscle", String.format("%.1f%%", muscle));
@@ -301,6 +318,7 @@ public class test extends AppCompatActivity {
 
                 }
             }
-        });
-    }
+        }
+    });
+}
 }

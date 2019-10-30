@@ -31,9 +31,8 @@ public class result extends AppCompatActivity {
         text_advice_bone.setText(intent.getStringExtra("data_advice_bone"));
         TextView text_advice_metabolism = findViewById(R.id.text_advice_metabolism);
         text_advice_metabolism.setText(intent.getStringExtra("data_advice_metabolism"));
-        //TextView text_advice = findViewById(R.id.text_advice);
-        //text_advice.setText(intent.getStringExtra("data_advice"));
-        ImageView homepage = (ImageView) findViewById(R.id.homepage);
+        ImageView homepage = findViewById(R.id.homepage);
+        //返回主页时获取计算结果
         homepage.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -47,7 +46,6 @@ public class result extends AppCompatActivity {
                 String muscle = intent_data.getStringExtra("data_muscle");
                 String bone = intent_data.getStringExtra("data_bone");
                 String metabolism = intent_data.getStringExtra("data_metabolism");
-                String score_overall = intent_data.getStringExtra("data_overall");
                 String grade_stature = intent_data.getStringExtra("data_grade_stature");
                 String grade_weight = intent_data.getStringExtra("data_grade_weight");
                 String grade_bmi = intent_data.getStringExtra("data_grade_bmi");
@@ -56,6 +54,7 @@ public class result extends AppCompatActivity {
                 String grade_muscle = intent_data.getStringExtra("data_grade_muscle");
                 String grade_bone = intent_data.getStringExtra("data_grade_bone");
                 String grade_metabolism = intent_data.getStringExtra("data_grade_metabolism");
+                String score_overall = intent_data.getStringExtra("data_overall");
                 String grade_overall = intent_data.getStringExtra("data_grade_overall");
                 intent.putExtra("data_stature",stature);
                 intent.putExtra("data_weight", weight);
@@ -79,6 +78,7 @@ public class result extends AppCompatActivity {
             }
         });
 
+        //重新测试
         ImageView restart = findViewById(R.id.restart);
         restart.setOnClickListener(new View.OnClickListener(){
             @Override

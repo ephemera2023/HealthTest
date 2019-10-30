@@ -11,10 +11,12 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/back_6"
+            android:text="测试报告"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
             android:layout_centerInParent="true"/>
     </RelativeLayout>
 
@@ -30,8 +32,7 @@
             android:layout_gravity="center"
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
-            android:orientation="horizontal"
-            android:background="@drawable/back_9">
+            android:orientation="horizontal">
 
             <TextView
             android:layout_width="0dp"
@@ -40,7 +41,7 @@
             android:layout_weight="1"
             android:gravity="center_vertical"
             android:text="总体得分："
-            android:textColor="#ffffff"
+            android:textColor="#E8E8E8"
             android:textSize="27sp" />
 
             <TextView
@@ -50,7 +51,7 @@
             android:textSize="22sp"
             android:layout_marginRight="10dp"
             android:layout_marginEnd="10dp"
-            android:textColor="#ffffff"
+            android:textColor="#E8E8E8"
             android:layout_gravity="center_vertical"
             android:gravity="center_vertical"/>
 
